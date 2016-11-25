@@ -43,38 +43,27 @@ If you need any custom configuration, simple pass these environment variables to
 Here is an example to build all StackStorm components and deploy them to Docker Hub.
 It shows current automated CI & Deployment logic.
 
-##### 1. Build `st2`
-This is base image, which will be used as parent for StackStorm components.
+##### 1. Build `st2` and StackStorm components
 
+Build all st2 components via docker-compose:
+
+`st2` is base image, which will be used as parent for StackStorm components.
+
+```sh
+ST2_VERSION=2.0.1 ST2_REVISION=3 ST2_REPO=staging-stable docker-compose build
 ```
-docker build --build-arg ST2_VERSION="2.0.1-3" --build-arg ST2_REPO="staging-stable" -t st2 stackstorm/
-```
+
 where `2.0.1` is version and `3` is revision number you can obtain from the [`PackageCloud repo`](https://packagecloud.io/StackStorm/staging-stable). 
 
-##### 2. Build StackStorm components from the Base image
-Once we have `st2` base Docker image, we can build child containers from it. Do for all StackStorm components:
-```
-docker build -t stackstorm/st2actionrunner:2.0.1 st2actionrunner/
-docker build -t stackstorm/st2api:2.0.1 st2api/
-docker build -t stackstorm/st2auth:2.0.1 st2auth/
-docker build -t stackstorm/st2notifier:2.0.1 st2notifier/
-docker build -t stackstorm/st2resultstracker:2.0.1 st2resultstracker/
-docker build -t stackstorm/st2rulesengine:2.0.1 st2rulesengine/
-docker build -t stackstorm/st2sensorcontainer:2.0.1 st2sensorcontainer/
-docker build -t stackstorm/st2garbagecollector:2.0.1 st2garbagecollector/
-```
-> Make sure you tag Docker containers `X.Y.Z` for versioned `vX.Y.Z` branch in `st2`.
-> `latest` Docker tag for `master` branch.
-
-##### 3. Usage
+##### 2. Usage
 Start all st2 components via docker-compose:
 ```
-docker-compose up -d
+ST2_VERSION=2.0.1 docker-compose up -d
 ```
 
 Optionally run several `st2actionrunner` services:
 ```sh
-docker-compose scale actionrunner=4
+ST2_VERSION=2.0.1 docker-compose scale actionrunner=4
 ```
 
 You can use StackStorm now: 
@@ -93,12 +82,13 @@ docker-compose run --rm client st2 run packs.install packs=github
 ```
 docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
 
-docker push stackstorm/st2actionrunner:2.0.1
-docker push stackstorm/st2api:2.0.1
-docker push stackstorm/st2auth:2.0.1
-docker push stackstorm/st2notifier:2.0.1
-docker push stackstorm/st2resultstracker:2.0.1
-docker push stackstorm/st2rulesengine:2.0.1
-docker push stackstorm/st2sensorcontainer:2.0.1
-docker push stackstorm/st2garbagecollector:2.0.1
+ST2_VERSION=2.0.1 
+docker push stackstorm/st2actionrunner:${ST2_VERSION:?}
+docker push stackstorm/st2api:${ST2_VERSION:?}
+docker push stackstorm/st2auth:${ST2_VERSION:?}
+docker push stackstorm/st2notifier:${ST2_VERSION:?}
+docker push stackstorm/st2resultstracker:${ST2_VERSION:?}
+docker push stackstorm/st2rulesengine:${ST2_VERSION:?}
+docker push stackstorm/st2sensorcontainer:${ST2_VERSION:?}
+docker push stackstorm/st2garbagecollector:${ST2_VERSION:?}
 ```
