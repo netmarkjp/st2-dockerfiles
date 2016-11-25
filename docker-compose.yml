@@ -7,11 +7,13 @@ services:
         ST2_VERSION: ${ST2_VERSION}-${ST2_REVISION}
         ST2_REPO: ${ST2_REPO}
     image: st2
+    container_name: st2
 
   api:
     build:
       context: ./st2api
     image: stackstorm/st2api:${ST2_VERSION}
+    container_name: st2api
     links:
       - mongo
       - rabbitmq
@@ -22,6 +24,7 @@ services:
     build:
       context: ./st2auth
     image: stackstorm/st2auth:${ST2_VERSION}
+    container_name: st2auth
     links:
       - api
       - mongo
@@ -32,6 +35,7 @@ services:
     build:
       context: ./st2stream
     image: stackstorm/st2stream:${ST2_VERSION}
+    container_name: st2stream
     links:
       - mongo
       - rabbitmq
@@ -42,6 +46,7 @@ services:
     build:
       context: ./st2notifier
     image: stackstorm/st2notifier:${ST2_VERSION}
+    container_name: st2notifier
     links:
       - api
       - mongo
@@ -53,6 +58,7 @@ services:
     build:
       context: ./st2resultstracker
     image: stackstorm/st2resultstracker:${ST2_VERSION}
+    container_name: st2resultstracker
     links:
       - api
       - mongo
@@ -64,6 +70,7 @@ services:
     build:
       context: ./st2rulesengine
     image: stackstorm/st2rulesengine:${ST2_VERSION}
+    container_name: st2rulesengine
     links:
       - api
       - mongo
@@ -75,6 +82,7 @@ services:
     build:
       context: ./st2sensorcontainer
     image: stackstorm/st2sensorcontainer:${ST2_VERSION}
+    container_name: st2sensorcontainer
     links:
       - api
       - mongo
@@ -86,6 +94,7 @@ services:
     build:
       context: ./st2garbagecollector
     image: stackstorm/st2garbagecollector:${ST2_VERSION}
+    container_name: st2garbagecollector
     links:
       - api
       - mongo
@@ -97,6 +106,7 @@ services:
     build:
       context: ./st2actionrunner
     image: stackstorm/st2actionrunner:${ST2_VERSION}
+    container_name: st2actionrunner
     links:
       - api
       - auth
@@ -108,13 +118,17 @@ services:
   ## External Services
   mongo:
     image: mongo
+    container_name: st2mongo
 
   rabbitmq:
     image: rabbitmq
+    container_name: st2rabbitmq
 
   ## Data container
   data:
-    build: ./data
+    build:
+      context: ./data
+    container_name: st2data
     volumes:
       - /etc/st2
       - /opt/stackstorm
@@ -124,7 +138,9 @@ services:
 
   ## Client container
   client:
-    build: ./client
+    build:
+      context: ./client
+    container_name: st2client
     links:
       - api
       - auth
