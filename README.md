@@ -50,24 +50,38 @@ Build all st2 components via docker-compose:
 `st2` is base image, which will be used as parent for StackStorm components.
 
 ```sh
-ST2_VERSION=2.0.1 ST2_REVISION=3 ST2_REPO=staging-stable docker-compose build
+export ST2_VERSION=2.0.1
+export ST2_REVISION=3
+export ST2_REPO=staging-stable
+docker-compose build
 ```
 
 where `2.0.1` is version and `3` is revision number you can obtain from the [`PackageCloud repo`](https://packagecloud.io/StackStorm/staging-stable). 
 
 ##### 2. Usage
 Start all st2 components via docker-compose:
-```
-ST2_VERSION=2.0.1 docker-compose up -d
+```sh
+export ST2_VERSION=2.0.1
+export ST2_REVISION=3
+export ST2_REPO=staging-stable
+docker-compose up -d
 ```
 
 Optionally run several `st2actionrunner` services:
 ```sh
-ST2_VERSION=2.0.1 docker-compose scale actionrunner=4
+export ST2_VERSION=2.0.1
+export ST2_REVISION=3
+export ST2_REPO=staging-stable
+docker-compose scale actionrunner=4
 ```
 
 You can use StackStorm now: 
 ```
+# prepare
+export ST2_VERSION=2.0.1
+export ST2_REVISION=3
+export ST2_REPO=staging-stable
+
 # show st2 version
 docker-compose run --rm client st2 --version
 
@@ -80,9 +94,12 @@ docker-compose run --rm client st2 run packs.install packs=github
 
 ##### 4. Deploy to Docker Hub (optional)
 ```
+export ST2_VERSION=2.0.1
+export ST2_REVISION=3
+export ST2_REPO=staging-stable
+
 docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
 
-ST2_VERSION=2.0.1 
 docker push stackstorm/st2actionrunner:${ST2_VERSION:?}
 docker push stackstorm/st2api:${ST2_VERSION:?}
 docker push stackstorm/st2auth:${ST2_VERSION:?}
